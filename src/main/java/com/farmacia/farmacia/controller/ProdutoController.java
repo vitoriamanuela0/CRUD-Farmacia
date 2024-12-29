@@ -88,6 +88,20 @@ public class ProdutoController {
         throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Categoria não existe!", null);
     }
 
+    @PutMapping
+    public ResponseEntity<Produto> put(@Valid @RequestBody Produto produto) {
+        if (produtoRepository.existsById(produto.getId())) {
+
+            if (categoriaRepository.existsById(produto.getCategoria().getId()))
+                return ResponseEntity.status(HttpStatus.OK)
+                        .body(produtoRepository.save(produto));
+
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Categoria não existe!", null);
+        }
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    }
+
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Long id) {
